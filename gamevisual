@@ -1,7 +1,27 @@
 #!/usr/bin/env bash
 
+declare -A HEXMAP=(
+  [Cinema]=x03
+  [Scenery]=x0b
+  [sRGB]=x0d
+  [sRGB_Reset]=x0e
+  [Racing]=x11
+  [RTS_RPG]=x12
+  [FPS]=x13
+)
+
+get_hex_value() {
+  local name=$1
+  if [[ -v HEXMAP[$name] ]]; then
+    echo "${HEXMAP[$name]}"
+  else
+    echo "Error: unknown name '$name'" >&2
+    exit 1
+  fi
+}
+
 file="/tmp/gamevisual_previous"
-default="x0d"
+default="sRGB"
 value=$default
 
 # Check if the parameter is "previous"
@@ -12,7 +32,7 @@ if [[ "$1" == "previous" ]]; then
         value=$default
     fi
 else
-    value=${1:-$default}
+    value=$(get_hex_value "${1:-$default}")
 fi
 
 # Store the current value to file 
@@ -20,4 +40,3 @@ ddcutil --model VG279 getvcp xdc --terse | cut -d " " -f 4 > "$file"
 
 # Execute the command with the value
 ddcutil --model VG279 setvcp xdc "$value" > /dev/null
-
