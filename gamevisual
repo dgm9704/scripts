@@ -8,6 +8,7 @@ declare -A HEXMAP=(
   [Racing]=x11
   [RTS_RPG]=x12
   [FPS]=x13
+  [MOBA]=x14
 )
 
 get_hex_value() {
